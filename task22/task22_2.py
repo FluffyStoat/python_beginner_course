@@ -4,13 +4,36 @@
 # Примечание: у каждой точки есть две координаты: x и y. Расстояние
 # рассчитывается по формуле, которую вы с лёгкостью найдёте в Интернете.
 
-msg = "Введите первую координаты %s точки через [x:y]: "
+from typing import List, Dict
+from math import sqrt
 
-input_point1 = input(msg.format("первой")).split(':')
-point1: tuple = tuple(int(x.strip()) for x in input_point1)
+msg = "Введите первую координаты {point_name} точки через [x:y]: "
 
-input_point2 = input(msg.format("второй")).split(':')
-point2: tuple = tuple(int(x.strip()) for x in input_point2)
 
-print(f"Точка A: {point1}")
-print(f"Точка Б: {point2}")
+def main():
+    points_names: List[str] = ["А", "Б"]
+    points: Dict[str, tuple] = {}
+
+    for name in points_names:
+        points[name] = input_point(name)
+
+    point_a = points["А"]
+    point_b = points["Б"]
+
+    result = sqrt(pow(point_b[0] - point_a[0], 2) + pow(point_b[1] - point_a[1], 2))
+    print("Растояние между точками равно {:.3f}".format(result))
+
+
+def input_point(point_name: str) -> tuple:
+    try:
+        coordinate = input(msg.format(point_name=point_name)).split(':')
+        point = tuple(int(crd.strip()) for crd in coordinate)
+        return point
+    except ValueError:
+        print('Ошибка ввода координата будет равна [0, 0]')
+    return 0, 0
+
+
+if __name__ == "__main__":
+    main()
+
