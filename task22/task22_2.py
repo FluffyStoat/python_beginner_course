@@ -27,10 +27,9 @@ def main():
 def input_point(point_name: str) -> tuple:
     try:
         coordinate = input(msg.format(point_name=point_name)).split(':')
-        point = tuple(int(crd.strip()) for crd in coordinate)
-        return point
+        return tuple(int(crd.strip()) for crd in coordinate)
     except ValueError:
-        print('Ошибка ввода координата будет равна [0, 0]')
+        print('Ошибка ввода координата будет равна [0:0]')
     return 0, 0
 
 
