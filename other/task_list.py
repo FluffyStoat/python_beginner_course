@@ -9,31 +9,28 @@ from typing import List
 
 
 def check(values: List[int]):
-    print(values)
-
     values.sort()
 
     ranges: List[str] = []
     start: int = values[0]
 
     for num, val in enumerate(values, start=1):
-        print(f"start={start} len={len(values)} num={num} val={val}")
-
-        if len(values) == num:
-            if num == len(values):
-                if start != val:
-                    ranges.append(f"{start}-{val}")
-                else:
-                    ranges.append(f"{val}")
+        if num == len(values):
+            add_range(ranges, start, val)
             break
+
         if val + 1 != values[num]:
-            if start != val:
-                ranges.append(f"{start}-{val}")
-            else:
-                ranges.append(f"{val}")
+            add_range(ranges, start, val)
             start = values[num]
 
-    print(f"Result: {ranges}")
+    print(f"{values} => {ranges}")
+
+
+def add_range(ranges: List[str], start: int, end: int):
+    if start != end:
+        ranges.append(f"{start}-{end}")
+    else:
+        ranges.append(f"{end}")
 
 
 def main():
