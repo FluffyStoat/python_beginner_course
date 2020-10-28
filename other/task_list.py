@@ -12,16 +12,16 @@ def check(values: List[int]):
     values.sort()
 
     ranges: List[str] = []
-    start: int = values[0]
+    range_start: int = values[0]
 
-    for num, val in enumerate(values, start=1):
-        if num == len(values):
-            add_range(ranges, start, val)
+    for next_index, curr_value in enumerate(values, start=1):
+        if next_index == len(values):
+            add_range(ranges, range_start, curr_value)
             break
 
-        if val + 1 != values[num]:
-            add_range(ranges, start, val)
-            start = values[num]
+        if curr_value + 1 != values[next_index]:
+            add_range(ranges, range_start, curr_value)
+            range_start = values[next_index]
 
     print(f"{values} => {ranges}")
 
