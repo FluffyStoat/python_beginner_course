@@ -16,7 +16,7 @@ class TaskList {
                 var next = values.get(i + 1);
                 if (cur + 1 != next) {
                     addRange(ranges, start, cur);
-                    start = cur;
+                    start = next;
                 }
             }
 
