@@ -19,12 +19,31 @@
 # -10^9 <= nums[i] <= 10^9
 # -10^9 <= target <= 10^9
 # Only one valid answer exists.
-from typing import List
+from typing import List, Dict
 
 
 class Solution:
     def __init__(self):
         print("[LeetCode] 1. Two Sum")
+
+    @staticmethod
+    def fast_two_sum(nums: List[int], target: int) -> List[int]:
+        size: range = range(len(nums))
+        vals: Dict[int, int] = {}
+        vals.fromkeys(size)
+        for i in size:
+            try:
+                if vals[target - nums[i]] != i:
+                    return [vals[target - nums[i]], i]
+            except KeyError:
+                vals[nums[i]] = i
+        for i in size:
+            try:
+                if vals[target - nums[i]] != i:
+                    return [i, vals[target - nums[i]]]
+            except KeyError:
+                continue
+        return []
 
     @staticmethod
     def two_sum(nums: List[int], target: int) -> List[int]:
@@ -78,7 +97,7 @@ def main():
     nums: List[int] = [3, 2, 4]
     target: int = 6
 
-    result: List[int] = solution.two_sum(nums, target)
+    result: List[int] = solution.fast_two_sum(nums, target)
     print(f"Result: {result}")
 
 
