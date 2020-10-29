@@ -24,19 +24,62 @@ from typing import List
 
 class Solution:
     def __init__(self):
-        print("Constructor")
+        print("[LeetCode] 1. Two Sum")
 
     @staticmethod
     def two_sum(nums: List[int], target: int) -> List[int]:
-        print("Two Sum")
-        return [0, 1]
+        try:
+            check_constraints(nums, target)
+        except NameError:
+            print("Constraints error!")
+            raise
+
+        result: List[int] = []
+        size: int = len(nums)
+
+        for curr, value in enumerate(nums):
+            if curr >= size:
+                break
+
+            difference: int = target - value
+
+            try:
+                pair: int = nums.index(difference, curr + 1)
+                result.append(curr)
+                result.append(pair)
+                break
+            except ValueError:
+                continue
+
+        return result
+
+
+def check_constraints(nums: List[int], target: int) -> None:
+    # Constraints:
+    # 2 <= nums.length <= 10^5
+    # -10^9 <= nums[i] <= 10^9
+    # -10^9 <= target <= 10^9
+
+    size: int = len(nums)
+
+    if size < 2 or size > pow(10, 5):
+        raise NameError("Wrong constraint 2 <= nums.length <= 10^5")
+
+    for val in nums:
+        if val < pow(-10, 9) or val > pow(10, 9):
+            raise NameError("Wrong constraint -10^9 <= nums[i] <= 10^9")
+
+    if target < pow(-10, 9) or target > pow(10, 9):
+        raise NameError("Wrong constraint -10^9 <= target <= 10^9")
 
 
 def main():
     solution: Solution = Solution()
-    nums: List[int] = [2,7,11,15]
-    target: int = 9
-    solution.two_sum(nums, target)
+    nums: List[int] = [3, 2, 4]
+    target: int = 6
+
+    result: List[int] = solution.two_sum(nums, target)
+    print(f"Result: {result}")
 
 
 if __name__ == "__main__":
