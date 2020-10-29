@@ -29,21 +29,14 @@ class Solution:
     @staticmethod
     def fast_two_sum(nums: List[int], target: int) -> List[int]:
         size: range = range(len(nums))
-        vals: Dict[int, int] = {}
-        vals.fromkeys(size)
+        dic: Dict[int, int] = {}
+        dic.fromkeys(size)
+
         for i in size:
-            try:
-                if vals[target - nums[i]] != i:
-                    return [vals[target - nums[i]], i]
-            except KeyError:
-                vals[nums[i]] = i
-        for i in size:
-            try:
-                if vals[target - nums[i]] != i:
-                    return [i, vals[target - nums[i]]]
-            except KeyError:
-                continue
-        return []
+            if target - nums[i] in dic.keys():
+                return [i, dic[target - nums[i]]]
+            else:
+                dic[nums[i]] = i
 
     @staticmethod
     def two_sum(nums: List[int], target: int) -> List[int]:
