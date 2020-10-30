@@ -17,6 +17,8 @@
 # Example 3:
 # Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
 # Output: [8,9,9,9,0,0,0,1]
+from typing import List
+
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -54,23 +56,24 @@ class Solution:
         return node
 
 
+def fill_nodes(values: List[int]) -> ListNode:
+    values.reverse()
+
+    list_node: ListNode = None
+    prev: ListNode = None
+
+    for num in values:
+        list_node = ListNode(num, prev)
+        prev = list_node
+
+    return list_node
+
+
 def main():
     solution: Solution = Solution()
 
-    # l1 = [9, 9, 9, 9, 9, 9, 9], l2 = [9, 9, 9, 9]
-
-    l17: ListNode = ListNode(9, None)
-    l16: ListNode = ListNode(9, l17)
-    l15: ListNode = ListNode(9, l16)
-    l14: ListNode = ListNode(9, l15)
-    l13: ListNode = ListNode(9, l14)
-    l12: ListNode = ListNode(9, l13)
-    l1: ListNode = ListNode(9, l12)
-
-    l24: ListNode = ListNode(9, None)
-    l23: ListNode = ListNode(9, l24)
-    l22: ListNode = ListNode(9, l23)
-    l2: ListNode = ListNode(9, l22)
+    l1: ListNode = fill_nodes([9, 9, 9, 9, 9, 9, 9])
+    l2: ListNode = fill_nodes([9, 9, 9, 9])
 
     node: ListNode = solution.add_two_numbers(l1, l2)
     print(f"Result: {node.val}")
