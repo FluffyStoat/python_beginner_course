@@ -17,8 +17,8 @@
 #
 # Only the space character ' ' is considered a whitespace character.
 # Assume we are dealing with an environment that could only store integers within the 32-bit signed integer
-# range: [−231,  231 − 1]. If the numerical value is out of the range of representable values, INT_MAX (231 − 1)
-# or INT_MIN (−231) is returned.
+# range: [−2^31,  2^31 − 1]. If the numerical value is out of the range of representable values, INT_MAX (2^31 − 1)
+# or INT_MIN (−2^31) is returned.
 #
 #
 # Example 1:
@@ -55,19 +55,29 @@ class Solution:
     @staticmethod
     def my_atoi(message: str) -> int:
         symbols: List[str] = []
-        dictionary: str = "+- .1234567890"
+
+        dictionary: str = "-+ .1234567890"
+        int_min: int = pow(-2, 31)
+        int_max: int = pow(2, 31) - 1
+
         message = message.strip()
+        sign: str = None
 
         for symbol in message:
-            exists: bool = False
-
             if symbol in dictionary:
-                exists = True
+                if symbol == " " or symbol == ".":
+                    break
 
-            if symbol == " ":
-                break
+                if symbol == "-" or symbol == "+":
+                    if sign is not None or len(symbols) > 0:
+                        break
 
-            if exists:
+                    if sign is None:
+                        sign = symbol
+                        continue
+                    else:
+                        return 0
+
                 symbols.append(symbol)
             else:
                 break
@@ -75,39 +85,33 @@ class Solution:
         if len(symbols) == 0:
             return 0
 
-        sign: str = "+"
-        is_float: bool = False
-        digits: List[int] = []
+        value: int = int(''.join(symbols))
 
-        for symbol in symbols:
-            if symbol == "-":
-                sign = "-"
-            elif symbol == ".":
-                is_float = True
-            else:
-                digits.append(int(symbol))
+        if sign == "-":
+            value = value * (-1)
 
-        print(f"symbols: {symbols}\ndigits: {digits} sign: {sign} is_float: {is_float}")
-        return None
+        if value < int_min:
+            value = int_min
+
+        if value > int_max:
+            value = int_max
+
+        return value
 
 
 def main():
     solution: Solution = Solution()
 
-    print("42:")
-    print(f'{solution.my_atoi("42")}')
-
-    print("   -42:")
-    print(f'{solution.my_atoi("   -42")}')
-
-    print("4193 with words:")
-    print(f'{solution.my_atoi("4193 with words")}')
-
-    print("-91283472332:")
-    print(f'{solution.my_atoi("-91283472332")}')
-
-    print("-56.73 472332")
-    print(f'{solution.my_atoi("-56.73 472332")}')
+    print(f'"42": {solution.my_atoi("42")}')
+    print(f'"   -42": {solution.my_atoi("   -42")}')
+    print(f'"4193 with words": {solution.my_atoi("4193 with words")}')
+    print(f'"-91283472332": {solution.my_atoi("-91283472332")}')
+    print(f'"-56.73 472332": {solution.my_atoi("-56.73 472332")}')
+    print(f'"+-12": {solution.my_atoi("+-12")}')
+    print(f'"++12": {solution.my_atoi("++12")}')
+    print(f'"--12": {solution.my_atoi("--12")}')
+    print(f'"00000-42a1234": {solution.my_atoi("00000-42a1234")}')
+    print(f'"-5-": {solution.my_atoi("-5-")}')
 
 
 if __name__ == "__main__":
