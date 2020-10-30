@@ -29,6 +29,8 @@ class Solution:
     def add_two_numbers(l1: ListNode, l2: ListNode) -> ListNode:
         step: int = 1
         result: int = 0
+        node = ListNode()
+
         while l1 is not None or l2 is not None:
             if l1 is not None:
                 result = result + l1.val * step
@@ -44,16 +46,34 @@ class Solution:
 
             step = step * 10
 
-        return ListNode(val=result, next=None)
+            node.val = int(result / step)
+            node.next = ListNode()
+            node = node.next
+
+        print(f"Result: {result}")
+        return node
 
 
 def main():
     solution: Solution = Solution()
-    l1: ListNode = ListNode()#[2, 4, 3]
-    l2: ListNode = ListNode()#[5, 6, 4]
 
-    result: ListNode = solution.add_two_numbers(l1, l2)
-    print(f"Result: {result}")
+    # l1 = [9, 9, 9, 9, 9, 9, 9], l2 = [9, 9, 9, 9]
+
+    l17: ListNode = ListNode(9, None)
+    l16: ListNode = ListNode(9, l17)
+    l15: ListNode = ListNode(9, l16)
+    l14: ListNode = ListNode(9, l15)
+    l13: ListNode = ListNode(9, l14)
+    l12: ListNode = ListNode(9, l13)
+    l1: ListNode = ListNode(9, l12)
+
+    l24: ListNode = ListNode(9, None)
+    l23: ListNode = ListNode(9, l24)
+    l22: ListNode = ListNode(9, l23)
+    l2: ListNode = ListNode(9, l22)
+
+    node: ListNode = solution.add_two_numbers(l1, l2)
+    print(f"Result: {node.val}")
 
 
 if __name__ == "__main__":
