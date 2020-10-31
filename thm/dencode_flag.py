@@ -15,7 +15,16 @@ def main():
         for i in range(5):
             flag_bytes = base64.b64decode(flag_bytes)
 
-        print(f"flag = {flag_bytes}")
+        print(f"flag c1 = {flag_bytes}")
+
+    with open("b64.txt", "r") as file:
+        msg = file.readline()
+        flag_bytes = msg.encode('ascii')
+
+        for i in range(50):
+            flag_bytes = base64.b64decode(flag_bytes)
+
+        print(f"flag c2 = {flag_bytes}")
 
 
 if __name__ == "__main__":
