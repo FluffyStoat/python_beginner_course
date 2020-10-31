@@ -17,6 +17,7 @@ def main():
 
         print(f"flag c1 = {flag_bytes}")
 
+    # file https://tryhackme.com/room/scripting
     with open("b64.txt", "r") as file:
         msg = file.readline()
         flag_bytes = msg.encode('ascii')

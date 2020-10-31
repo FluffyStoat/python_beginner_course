@@ -1,5 +1,5 @@
 #!/bin/bash
-cp b64.txt tmp/encoded_data_dec.txt
+cp ../b64.txt tmp/encoded_data_dec.txt
 
 for i in {1..50}
 do

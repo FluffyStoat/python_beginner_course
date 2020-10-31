@@ -2,3 +2,6 @@
 *.sublime-workspace
 venv/
 .idea/
+thm/b64.txt
+thm/tmp/
+/thm/bash/tmp/encoded_data_dec.txt
