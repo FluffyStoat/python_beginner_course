@@ -50,7 +50,14 @@ def main():
         s.connect((f"{HOST}", PORT))
         # s.sendall(b"GET / HTTP/1.1\r\nAccept: text/html\r\n\r\n")
         s.sendall(b"GET / HTTP/1.1\r\nHost:www.google.com\r\n\r\n")
-        print(str(s.recv(4048), 'utf-8'))
+
+        data: str = str(s.recv(4048), 'utf-8')
+        print(f"data: {data}")
+
+        optional: Optional = re.compile('":([0-9]+)').search(data)
+        p: str = optional.group(1)
+
+        print(f"port: {p}")
 
 
 if __name__ == "__main__":
