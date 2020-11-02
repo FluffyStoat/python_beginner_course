@@ -22,14 +22,13 @@
 # Send an operation
 # View response and continue
 import re
-from typing import Optional
-
 import socket
-
+from typing import Optional
+import time
 import requests
 from requests import Response
 
-HOST: str = '10.10.56.146'  # Standard loopback interface address (localhost)
+HOST: str = '10.10.149.102'  # Standard loopback interface address (localhost)
 PORT: int = 3010  # Port to listen on (non-privileged ports are > 1023)
 URL: str = f'http://{HOST}:{PORT}'
 
@@ -42,22 +41,35 @@ def main():
     response: Response = requests.get(URL, headers=headers)
     print(f'{response.text}')
 
-    result: Optional = re.compile(':([0-9]+)').search(response.text)
-    start_port: str = result.group(1)
-    print(start_port)
+    found: Optional = re.compile('":([0-9]+)"').search(response.text)
+    if found:
+        start_port = int(found.group(1))
+        print(f"start_port: {start_port}")
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((f"{HOST}", PORT))
-        # s.sendall(b"GET / HTTP/1.1\r\nAccept: text/html\r\n\r\n")
-        s.sendall(b"GET / HTTP/1.1\r\nHost:www.google.com\r\n\r\n")
+        next_port: int = start_port
 
-        data: str = str(s.recv(4048), 'utf-8')
-        print(f"data: {data}")
+        while True:
+            time.sleep(1)
+            resp: Response = requests.get(f'http://{HOST}:{next_port}', headers=headers)
 
-        optional: Optional = re.compile('":([0-9]+)').search(data)
-        p: str = optional.group(1)
+            if resp.text == 'STOP':
+                break
 
-        print(f"port: {p}")
+            command: [str] = resp.text.split()
+            print(f'command: {command[0]} {command[1]} {command[2]}')
+            if command[0] == 'minus':
+                start_port = start_port - int(command[1])
+            elif command[0] == 'add':
+                start_port = start_port + int(command[1])
+            elif command[0] == 'divide':
+                start_port = start_port + int(command[1])
+
+            next_port = int(command[2])
+            print(f"result = {start_port}")
+            print(f"{next_port}")
+
+    else:
+        print("NOT_FOUND")
 
 
 if __name__ == "__main__":
