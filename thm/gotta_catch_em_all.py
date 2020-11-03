@@ -22,6 +22,7 @@
 # Send an operation
 # View response and continue
 import re
+import socket
 import time
 from typing import Optional
 import requests
@@ -35,19 +36,19 @@ headers = {
 }
 
 
-def parse_command(cmd: str, amount: float) -> (int, int):
+def parse_command(cmd: str, amount: float) -> (float, int):
     command: [str] = cmd.split()
 
     print(f'command: {command[0]} {command[1]} {command[2]}')
 
     if command[0] == 'minus':
-        amount = amount - int(command[1])
+        amount = amount - float(command[1])
     elif command[0] == 'add':
-        amount = amount + int(command[1])
+        amount = amount + float(command[1])
     elif command[0] == 'divide':
         amount = amount / float(command[1])
     elif command[0] == 'multiply':
-        amount = amount * int(command[1])
+        amount = amount * float(command[1])
 
     next_port: int = int(command[2])
     print(f'amount: {amount}')
@@ -69,7 +70,6 @@ def main():
         first_response: Response = requests.get(f'http://{HOST}:{start_port}')
         first_response.close()
         cmd: str = first_response.text
-        time.sleep(1)
 
         print(f"first_command: {cmd}")
 
@@ -81,19 +81,32 @@ def main():
         next_port: int = parsed_command[1]
 
         while cmd != "STOP" or next_port != 9765:
-            try:
-                time.sleep(10)
-                cmd_response: Response = requests.get(f'http://{HOST}:{next_port}')
-                cmd_response.close()
-                cmd = cmd_response.text
-                print(f"resp: {cmd_response.text}")
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    print("*****************************************************")
+                    s.connect((HOST, next_port))
+                    s.send(b"GET / HTTP/1.1\r\nHost:www.google.com\r\n\r\n")
+                    data: str = repr(s.recv(1024))
+                    print(f"data: {data}")
 
-                new_cmd: [str] = parse_command(cmd, amount)
-                amount = new_cmd[0]
-                next_port = new_cmd[1]
-            except requests.exceptions.ConnectionError:
-                print("Connection error")
-                raise
+                    f: Optional = re.compile("\\\\r\\\\n\\\\r\\\\n([A-z0-9\\s.-]+)").search(data)
+                    if f:
+                        cmd = f.group(1)
+                        if cmd == 'STOP':
+                            print("*******************STOP******************************")
+                            break
+
+                        print(f"cmd: {cmd}")
+                        p: [str] = parse_command(cmd, amount)
+
+                        amount = p[0]
+                        next_port = p[1]
+                        print(f"amount: {amount} next_port: {next_port}")
+
+                except ConnectionRefusedError:
+                    print("Connection refused error")
+                    time.sleep(4)
+                    continue
 
         # while cmd != "STOP" or next_port != 9765:
         #     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
