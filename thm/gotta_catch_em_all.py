@@ -24,11 +24,12 @@
 import re
 import socket
 import time
-from typing import Optional
 import requests
+
+from typing import Optional
 from requests import Response
 
-HOST: str = '10.10.127.201'  # Standard loopback interface address (localhost)
+HOST: str = '10.10.136.85'  # Standard loopback interface address (localhost)
 PORT: int = 3010  # Port to listen on (non-privileged ports are > 1023)
 
 headers = {
@@ -38,8 +39,6 @@ headers = {
 
 def parse_command(cmd: str, amount: float) -> (float, int):
     command: [str] = cmd.split()
-
-    print(f'command: {command[0]} {command[1]} {command[2]}')
 
     if command[0] == 'minus':
         amount = amount - float(command[1])
@@ -51,75 +50,53 @@ def parse_command(cmd: str, amount: float) -> (float, int):
         amount = amount * float(command[1])
 
     next_port: int = int(command[2])
-    print(f'amount: {amount}')
 
     return amount, next_port
 
 
-def main():
+def get_start_port() -> int:
     response: Response = requests.get(f'http://{HOST}:{PORT}', headers=headers)
-    response.close()
-    print(f'{response.text}')
-    time.sleep(1)
-
     found: Optional = re.compile('":([0-9]+)"').search(response.text)
+
     if found:
         start_port = int(found.group(1))
-        print(f"start_port: {start_port}")
+        return start_port
 
-        first_response: Response = requests.get(f'http://{HOST}:{start_port}')
-        first_response.close()
-        cmd: str = first_response.text
+    return -1
 
-        print(f"first_command: {cmd}")
 
-        parsed_command: [str] = parse_command(first_response.text, 0.0)
+def main():
+    next_port: int = get_start_port()
+    amount: float = 0.0
+    cmd: str = ''
 
-        print(f"parsed_command[0]: {parsed_command[0]} parsed_command[1]: {parsed_command[1]}")
-
-        amount: float = parsed_command[0]
-        next_port: int = parsed_command[1]
-
-        while cmd != "STOP" or next_port != 9765:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    if next_port != -1:
+        while cmd != "STOP" and next_port != 9765:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 try:
-                    print("*****************************************************")
-                    s.connect((HOST, next_port))
-                    s.send(b"GET / HTTP/1.1\r\nHost:www.google.com\r\n\r\n")
-                    data: str = repr(s.recv(1024))
-                    print(f"data: {data}")
+                    sock.connect((HOST, next_port))
+                    sock.send(b"GET / HTTP/1.1\r\n\r\n")
+                    data: str = repr(sock.recv(1024))
 
-                    f: Optional = re.compile("\\\\r\\\\n\\\\r\\\\n([A-z0-9\\s.-]+)").search(data)
-                    if f:
-                        cmd = f.group(1)
+                    found: Optional = re.compile("\\\\r\\\\n\\\\r\\\\n([A-z0-9\\s.-]+)").search(data)
+                    if found:
+                        cmd = found.group(1)
                         if cmd == 'STOP':
-                            print("*******************STOP******************************")
+                            print("STOP")
                             break
 
-                        print(f"cmd: {cmd}")
-                        p: [str] = parse_command(cmd, amount)
+                        parsed: [str] = parse_command(cmd, amount)
 
-                        amount = p[0]
-                        next_port = p[1]
-                        print(f"amount: {amount} next_port: {next_port}")
+                        amount = parsed[0]
+                        next_port = parsed[1]
+                        print(f"cmd: {cmd} amount: {amount}")
 
                 except ConnectionRefusedError:
-                    print("Connection refused error")
                     time.sleep(4)
-                    continue
-
-        # while cmd != "STOP" or next_port != 9765:
-        #     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        #         s.connect((HOST, next_port))
-        #         s.send(f"{amount}".encode("Utf-8"))
-        #         data = s.recv(1024)
-        #         print(f'Data: {repr(data)}')
-
-
-
-
+        else:
+            print("STOP")
     else:
-        print("NOT_FOUND")
+        print("Port doesn't found")
 
 
 if __name__ == "__main__":
