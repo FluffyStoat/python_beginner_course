@@ -35,4 +35,3 @@ def input_point(point_name: str) -> tuple:
 
 if __name__ == "__main__":
     main()
-
