@@ -14,7 +14,7 @@
 import unittest
 from typing import List
 
-from leetcode.sol_2_add_two_numbers import Solution, ListNode
+from leetcode.lc_2_add_two_numbers import Solution, ListNode
 
 
 class SolutionTest(unittest.TestCase):

@@ -10,7 +10,7 @@
 #    Output: [0, 1]
 
 import unittest
-from leetcode.sol_1_two_sum import Solution
+from leetcode.lc_1_two_sum import Solution
 
 
 class SolutionTest(unittest.TestCase):
