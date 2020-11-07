@@ -1,3 +1,4 @@
+# Colors for console
 class Colors:
     reset_all = "\033[0m"
     bold = "\033[1m"

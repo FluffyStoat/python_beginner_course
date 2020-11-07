@@ -3,20 +3,26 @@
 # Сгенерировать случайный выбор компьютера. Вывести выбор компьютера.
 # Определить победителя, выведя соответствующую информацию. Спросить пользователя - хочет ли он повторить игру.
 # Если хочет - повторить, не хочет - выйти из цикла.
-from typing import List
+
+from typing import List, Dict
 from utils.console_colors import Colors
 
 import random
 
 
 items_list: List[str] = ["R", "S", "P"]
+# Todo: Переделать на матрицу
+rules: Dict[str, str] = {
+    "RR": "Ничья",      "RS": "Победа",     "RP": "Поражение",
+    "SR": "Поражение",  "SS": "Ничья",      "SP": "Победа",
+    "PR": "Победа",      "PS": "Поражение", "PP": "Ничья",
+}
 
 header: str = f"""
 {Colors.light_yellow}********************************{Colors.reset_all}
 {Colors.light_yellow}* Игра "камень-ножницы-бумага" *{Colors.reset_all}
 {Colors.light_yellow}********************************{Colors.reset_all}
 """
-
 
 def main():
     print(header)
@@ -34,8 +40,12 @@ def main():
                 print(f"{Colors.red}Выбран некорректный символ!{Colors.reset_all}\n"
                       f"Пожалуйста повторите выбор или выберите {Colors.light_yellow}'Q'{Colors.reset_all}\n")
         else:
+            comp_item: str = random.choice(items_list)
             print(f"Ваш выбор: {Colors.light_yellow}{item}{Colors.reset_all}")
-            print(f"Выбор компьютера: {Colors.light_yellow}{random.choice(items_list)}{Colors.reset_all}\n")
+            print(f"Выбор компьютера: {Colors.light_yellow}{comp_item}{Colors.reset_all}")
+
+            # Todo: Сделать разные цвета результата
+            print(f"Результат: {rules[item + comp_item]}\n")
 
 
 if __name__ == "__main__":
