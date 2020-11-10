@@ -18,11 +18,13 @@
 # Передаются только положительные целые >= 0.
 
 def solve_hanoi_tower(discs: int) -> int:
-    pass
+    return pow(2, discs) - 1
 
 
 def main():
-    solve_hanoi_tower(3)
+    print(f"solve_hanoi_tower(3) -> {solve_hanoi_tower(3)}")
+    print(f"solve_hanoi_tower(5) -> {solve_hanoi_tower(5)}")
+    print(f"solve_hanoi_tower(0) -> {solve_hanoi_tower(0)}")
 
 
 if __name__ == "__main__":
