@@ -35,7 +35,7 @@ def calc_dice_scores(dices: List[Tuple[int, int]]) -> int:
 
 
 def main():
-    print(f"calc_dice_scores([(1, 2), (3, 4), (5, 6)]) -> {calc_dice_scores([(1, 2), (3, 4), (5, 6)]) }")
+    print(f"calc_dice_scores([(1, 2), (3, 4), (5, 6)]) -> {calc_dice_scores([(1, 2), (3, 4), (5, 6)])}")
     print(f"calc_dice_scores([(1, 1), (5, 6), (6, 4)]) -> {calc_dice_scores([(1, 1), (5, 6), (6, 4)])}")
     print(f"calc_dice_scores([(4, 5), (4, 5), (4, 5)]) -> {calc_dice_scores([(4, 5), (4, 5), (4, 5)])}")
 
